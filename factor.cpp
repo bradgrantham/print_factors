@@ -6,17 +6,21 @@
 #include <vector>
 #include <iostream>
 
-std::vector<int> factor(int n)
+std::vector<int> factor(int n, bool all)
 {
     std::vector<int> factors;
 
-    int i = 2;
+    int i = all ? 1 : 2;
 
-    while(i <= n){
+    while(i < n){
         if((n % i) == 0){
             factors.push_back(i);
-            n = n / i;
-            i = 2;
+            if(all) {
+                i++;
+            } else {
+                n = n / i;
+                i = 2;
+            }
         } else 
             i++;
     }
@@ -28,14 +32,26 @@ int main(
     int    argc,
     char    **argv)
 {
+    bool all = false;
+
     while(--argc > 0) {
-        auto factors = factor(atoi(argv[1]));
-        for(auto it = factors.begin(); it != factors.end(); it++) {
-            if(it != factors.begin())
-                std::cout << " ";
-            std::cout << *it;
+        if(strcmp(argv[1], "-a") == 0) {
+
+            all = true;
+
+        } else {
+
+            auto factors = factor(atoi(argv[1]), all);
+            bool first = true;
+            for(auto& it : factors) {
+                if(!first)
+                    std::cout << " ";
+                first = false;
+                std::cout << it;
+            }
+            std::cout << '\n';
         }
-        std::cout << std::endl;
+
         argv++;
     }
 }
